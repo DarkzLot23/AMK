@@ -1,0 +1,117 @@
+Below is the combined GUI for both cybersecurity monitoring and AMK memory management:
+
+```python
+import tkinter as tk
+from tkinter import ttk
+
+class AMKCybersecurityGUI:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("AMK Cybersecurity & Memory Management")
+        
+        self.create_widgets()
+        
+    def create_widgets(self):
+        # Main frame
+        self.main_frame = ttk.Frame(self.root)
+        self.main_frame.pack(padx=20, pady=20)
+        
+        # Title label
+        self.title_label = ttk.Label(self.main_frame, text="AMK Cybersecurity & Memory Management", font=("Helvetica", 18, "bold"))
+        self.title_label.grid(row=0, column=0, columnspan=2, pady=10)
+        
+        # Cybersecurity monitoring section
+        self.create_cybersecurity_section()
+        
+        # Memory management section
+        self.create_memory_management_section()
+        
+    def create_cybersecurity_section(self):
+        # Cybersecurity frame
+        self.cybersecurity_frame = ttk.Frame(self.main_frame)
+        self.cybersecurity_frame.grid(row=1, column=0, padx=10, pady=10)
+        
+        # Cybersecurity title label
+        self.cybersecurity_title_label = ttk.Label(self.cybersecurity_frame, text="Cybersecurity Monitoring", font=("Helvetica", 14, "bold"))
+        self.cybersecurity_title_label.grid(row=0, column=0, columnspan=2, pady=5)
+        
+        # Monitoring status label
+        self.status_label = ttk.Label(self.cybersecurity_frame, text="Monitoring Status:", font=("Helvetica", 12))
+        self.status_label.grid(row=1, column=0, sticky="w")
+        
+        # Monitoring status indicator
+        self.status_indicator = ttk.Label(self.cybersecurity_frame, text="Active", font=("Helvetica", 12, "bold"), foreground="green")
+        self.status_indicator.grid(row=1, column=1, sticky="w")
+        
+        # Anomaly detection label
+        self.anomaly_label = ttk.Label(self.cybersecurity_frame, text="Anomaly Detection:", font=("Helvetica", 12))
+        self.anomaly_label.grid(row=2, column=0, sticky="w")
+        
+        # Anomaly detection indicator
+        self.anomaly_indicator = ttk.Label(self.cybersecurity_frame, text="Enabled", font=("Helvetica", 12, "bold"), foreground="green")
+        self.anomaly_indicator.grid(row=2, column=1, sticky="w")
+        
+        # Response actions label
+        self.response_label = ttk.Label(self.cybersecurity_frame, text="Response Actions:", font=("Helvetica", 12))
+        self.response_label.grid(row=3, column=0, sticky="w")
+        
+        # Response actions indicator
+        self.response_indicator = ttk.Label(self.cybersecurity_frame, text="Automated", font=("Helvetica", 12, "bold"), foreground="green")
+        self.response_indicator.grid(row=3, column=1, sticky="w")
+        
+        # Analytic forecasting label
+        self.analytics_label = ttk.Label(self.cybersecurity_frame, text="Analytic Forecasting:", font=("Helvetica", 12))
+        self.analytics_label.grid(row=4, column=0, sticky="w")
+        
+        # Analytic forecasting indicator
+        self.analytics_indicator = ttk.Label(self.cybersecurity_frame, text="Enabled", font=("Helvetica", 12, "bold"), foreground="green")
+        self.analytics_indicator.grid(row=4, column=1, sticky="w")
+        
+        # Action button
+        self.action_button = ttk.Button(self.cybersecurity_frame, text="Take Action", command=self.take_action)
+        self.action_button.grid(row=5, column=0, columnspan=2, pady=10)
+        
+    def create_memory_management_section(self):
+        # Memory management frame
+        self.memory_frame = ttk.Frame(self.main_frame)
+        self.memory_frame.grid(row=1, column=1, padx=10, pady=10)
+        
+        # Memory management title label
+        self.memory_title_label = ttk.Label(self.memory_frame, text="AMK Memory Management", font=("Helvetica", 14, "bold"))
+        self.memory_title_label.grid(row=0, column=0, columnspan=2, pady=5)
+        
+        # Memory allocation status label
+        self.memory_status_label = ttk.Label(self.memory_frame, text="Memory Allocation Status:", font=("Helvetica", 12))
+        self.memory_status_label.grid(row=1, column=0, sticky="w")
+        
+        # Memory allocation status indicator
+        self.memory_status_indicator = ttk.Label(self.memory_frame, text="Active", font=("Helvetica", 12, "bold"), foreground="green")
+        self.memory_status_indicator.grid(row=1, column=1, sticky="w")
+        
+        # Memory usage label
+        self.memory_usage_label = ttk.Label(self.memory_frame, text="Memory Usage:", font=("Helvetica", 12))
+        self.memory_usage_label.grid(row=2, column=0, sticky="w")
+        
+        # Memory usage indicator
+        self.memory_usage_indicator = ttk.Label(self.memory_frame, text="70%", font=("Helvetica", 12, "bold"), foreground="blue")
+        self.memory_usage_indicator.grid(row=2, column=1, sticky="w")
+        
+        # Memory optimization label
+        self.memory_optimization_label = ttk.Label(self.memory_frame, text="Memory Optimization:", font=("Helvetica", 12))
+        self.memory_optimization_label.grid(row=3, column=0, sticky="w")
+        
+        # Memory optimization indicator
+        self.memory_optimization_indicator = ttk.Label(self.memory_frame, text="Enabled", font=("Helvetica", 12, "bold"), foreground="green")
+        self.memory_optimization_indicator.grid(row=3, column=1, sticky="w")
+        
+    def take_action(self):
+        # Placeholder for action functionality
+        print("Taking action...")
+
+# Create main window
+root = tk.Tk()
+app = AMKCybersecurityGUI(root)
+root.mainloop()
+```
+
+This GUI combines both cybersecurity monitoring and AMK memory management into a single interface, allowing users to monitor cybersecurity status while also managing memory resources efficiently.
