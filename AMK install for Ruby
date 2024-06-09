@@ -1,0 +1,17 @@
+To install and run the AMK script in Ruby, follow these steps:
+
+1. **Install Ruby**: If Ruby is not already installed on your system, you can download and install it from the [official Ruby website](https://www.ruby-lang.org/en/downloads/).
+
+2. **Create a New Ruby Script**: Open a text editor and copy the provided AMK script into a new file. Save the file with a `.rb` extension, for example, `amk_script.rb`.
+
+3. **Run the Script**: Open a terminal or command prompt, navigate to the directory where you saved the script, and run the script using the `ruby` command followed by the script filename. For example:
+
+    ```
+    ruby amk_script.rb
+    ```
+
+4. **Follow the Script Output**: The script will execute the AMK operations and display the results in the terminal. Follow the instructions or observe the output as the script performs memory allocation, retrieval, and deallocation.
+
+5. **Optional: Customize the Script**: You can modify the script to add more complex memory management features or integrate it into larger Ruby applications according to your requirements.
+
+By following these steps, you can install and run the AMK script in Ruby to perform memory management operations.
