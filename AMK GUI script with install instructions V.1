@@ -1,0 +1,294 @@
+Here is the complete AMK and GUI script with detailed installation instructions:
+
+### Installation Instructions
+
+#### Step 1: Install Python
+Ensure you have Python installed on your system. You can download it from [python.org](https://www.python.org/downloads/).
+
+#### Step 2: Create a Virtual Environment (Optional but Recommended)
+It is recommended to create a virtual environment to manage dependencies. You can create a virtual environment using the following commands:
+```sh
+python -m venv amk_env
+source amk_env/bin/activate  # On Windows, use `amk_env\Scripts\activate`
+```
+
+#### Step 3: Install Required Libraries
+The script requires `numpy`, `scikit-learn`, `matplotlib`, and `tkinter` libraries. You can install these libraries using pip:
+```sh
+pip install numpy scikit-learn matplotlib
+```
+
+#### Step 4: Save the Script
+Save the provided script into a file named `amk_gui.py`.
+
+#### Step 5: Run the Script
+Execute the script by running:
+```sh
+python amk_gui.py
+```
+
+### AMK and GUI Script
+
+Save the following script as `amk_gui.py`:
+
+```python
+import time
+import numpy as np
+import threading
+from sklearn.ensemble import RandomForestRegressor
+import tkinter as tk
+from tkinter import ttk, messagebox
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import matplotlib.pyplot as plt
+import subprocess
+import sys
+
+# Memory Usage Collector
+class MemoryUsageCollector:
+    def __init__(self):
+        self.memory_usage_data = []
+
+    def log_allocation(self, allocation_size):
+        timestamp = time.time()
+        self.memory_usage_data.append((timestamp, allocation_size))
+
+    def get_data(self):
+        return self.memory_usage_data
+
+# Predictive Model
+class PredictiveModel:
+    def __init__(self):
+        self.model = RandomForestRegressor(n_estimators=100)
+        self.trained = False
+
+    def train_model(self, data):
+        if len(data) < 10:  # Ensure enough data points for training
+            return
+        data = np.array(data)
+        X = data[:, 0].reshape(-1, 1)  # Feature: timestamp
+        y = data[:, 1]  # Target: allocation size
+        self.model.fit(X, y)
+        self.trained = True
+
+    def predict(self, current_timestamp):
+        if not self.trained:
+            return None
+        prediction = self.model.predict([[current_timestamp]])
+        return prediction[0]
+
+# Memory Manager
+class MemoryBlock:
+    def __init__(self, size):
+        self.size = size
+        self.free = True
+
+class MemoryManager:
+    def __init__(self):
+        self.blocks = []
+        self.usage_data = []
+
+    def allocate(self, size):
+        for block in self.blocks:
+            if block.free and block.size >= size:
+                block.free = False
+                self.log_usage(size)
+                return block
+        new_block = MemoryBlock(size)
+        self.blocks.append(new_block)
+        self.log_usage(size)
+        return new_block
+
+    def deallocate(self, block):
+        block.free = True
+
+    def log_usage(self, size):
+        timestamp = time.time()
+        self.usage_data.append((timestamp, size))
+
+# Memory Pool
+class MemoryPool:
+    def __init__(self):
+        self.pools = {size: [] for size in [64, 128, 256, 512, 1024]}
+
+    def allocate(self, size):
+        pool = self.pools.get(size, [])
+        if pool:
+            return pool.pop()
+        return MemoryBlock(size)
+
+    def deallocate(self, block):
+        block.free = True
+        self.pools[block.size].append(block)
+
+# Resource Monitor
+class ResourceMonitor:
+    def __init__(self, manager):
+        self.manager = manager
+        self.running = True
+
+    def monitor(self):
+        while self.running:
+            print("Monitoring memory usage...")
+            time.sleep(60)
+
+    def start(self):
+        threading.Thread(target=self.monitor).start()
+
+    def stop(self):
+        self.running = False
+
+# Adaptive Garbage Collector
+class AdaptiveGarbageCollector:
+    def __init__(self, manager):
+        self.manager = manager
+
+    def collect(self):
+        for block in self.manager.blocks:
+            if block.free:
+                self.manager.blocks.remove(block)
+
+# AMK Integration
+class AMK:
+    def __init__(self):
+        self.collector = MemoryUsageCollector()
+        self.model = PredictiveModel()
+        self.memory_manager = MemoryManager()
+        self.memory_pool = MemoryPool()
+        self.garbage_collector = AdaptiveGarbageCollector(self.memory_manager)
+        self.monitor = ResourceMonitor(self.memory_manager)
+
+    def allocate_memory(self, size):
+        # Log current allocation
+        self.collector.log_allocation(size)
+        current_timestamp = time.time()
+        
+        # Train model with collected data
+        data = self.collector.get_data()
+        self.model.train_model(data)
+        
+        # Predict future memory requirements
+        prediction = self.model.predict(current_timestamp)
+        if prediction:
+            print(f"Predicted future allocation: {prediction} bytes")
+        else:
+            print(f"Allocating requested size: {size} bytes")
+
+        # Actual memory allocation logic
+        block = self.memory_pool.allocate(size)
+        return block
+
+    def deallocate_memory(self, block):
+        self.memory_pool.deallocate(block)
+        self.garbage_collector.collect()
+
+    def start_monitoring(self):
+        self.monitor.start()
+
+    def stop_monitoring(self):
+        self.monitor.stop()
+
+# Performance Monitor and Feedback Loop
+class PerformanceMonitor:
+    def __init__(self, amk_instance):
+        self.amk = amk_instance
+        self.running = True
+
+    def monitor_and_feedback(self):
+        while self.running:
+            time.sleep(60)  # Adjust the sleep time as necessary
+            data = self.amk.collector.get_data()
+            self.amk.model.train_model(data)
+            print("Model retrained with new data.")
+
+    def start(self):
+        threading.Thread(target=self.monitor_and_feedback).start()
+
+    def stop(self):
+        self.running = False
+
+# Unified GUI Dashboard
+class UnifiedGUI(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        self.title("Unified GUI Dashboard")
+
+        # Main dashboard view
+        self.dashboard_frame = ttk.Frame(self)
+        self.dashboard_frame.pack(fill=tk.BOTH, expand=True)
+        self.create_dashboard_widgets()
+
+        # Navigation panel
+        self.navigation_panel = ttk.Frame(self, width=200)
+        self.navigation_panel.pack(side=tk.LEFT, fill=tk.Y)
+        self.create_navigation_widgets()
+
+        # Tabs or panels for each module
+        self.notebook = ttk.Notebook(self.dashboard_frame)
+        self.notebook.pack(fill=tk.BOTH, expand=True)
+        self.create_modules()
+
+        # Module Installation
+        self.install_modules_button = ttk.Button(self.navigation_panel, text="Install Modules", command=self.install_modules)
+        self.install_modules_button.pack(pady=10)
+
+    def create_dashboard_widgets(self):
+        # Widgets for main dashboard view (e.g., charts, indicators)
+        self.fig, self.ax = plt.subplots()
+        self.canvas = FigureCanvasTkAgg(self.fig, master=self.dashboard_frame)
+        self.canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+        self.ax.set_title("Memory Usage Over Time")
+        self.ax.set_xlabel("Time")
+        self.ax.set_ylabel("Memory Allocation (bytes)")
+
+    def create_navigation_widgets(self):
+        # Navigation buttons or icons for each module
+        amk_button = ttk.Button(self.navigation_panel, text="AMK Memory", command=self.show_amk_module)
+        amk_button.pack(pady=10)
+        cyber_button = ttk.Button(self.navigation_panel, text="Cyber Security", command=self.show_cyber_module)
+        cyber_button.pack(pady=10)
+        real_time_button = ttk.Button(self.navigation_panel, text="Real-Time Systems", command=self.show_real_time_module)
+        real_time_button.pack(pady=10)
+
+    def create_modules(self):
+        # Create tabs or panels for each module
+        self.amk_frame = ttk.Frame(self.notebook)
+        self.cyber_frame = ttk.Frame(self.notebook)
+        self.real_time_frame = ttk.Frame(self.notebook)
+
+        self.notebook.add(self.amk_frame, text="AMK Memory")
+        self.notebook.add(self.cyber_frame, text="Cyber Security")
+        self.notebook.add(self.real_time_frame, text="Real-Time Systems")
+
+        self.create_amk_widgets()
+        self.create_cyber_widgets()
+        self.create_real_time_widgets()
+
+    def create_amk_widgets(self):
+        # Widgets for AMK memory module
+        self.amk_label = ttk.Label(self.amk_frame, text="AMK Memory Module")
+        self.amk_label.pack()
+
+    def create_cyber_widgets(self):
+        # Widgets for cyber security module
+        self.cyber_label = ttk.Label(self.cyber_frame, text="Cyber Security Module")
+        self.cyber_label.pack()
+
+    def create_real_time_widgets(self):
+        # Widgets for real-time systems module
+        self.real_time_label = ttk.Label(self.real_time_frame, text="Real-Time Systems Module")
+        self.real_time_label.pack()
+
+    def show_amk_module(self):
+        # Show AMK memory module tab/panel
+        self.notebook.select(self.amk_frame)
+
+    def show_cyber_module(self):
+        # Show cyber security module tab/panel
+        self.notebook.select(self.cyber_frame)
+
+    def show_real_time_module(self):
+        # Show real-time systems module tab/panel
+        self.notebook.select(self.real_time_frame)
+
+    def install_modules(self):
+        modules = ['numpy', 'scikit-learn', 'mat
